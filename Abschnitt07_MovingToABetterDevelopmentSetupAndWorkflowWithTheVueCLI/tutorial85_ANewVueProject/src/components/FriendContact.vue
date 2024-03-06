@@ -40,6 +40,17 @@ export default {
       default: false,
     },
   },
+  emits: ["toggle-favorite"],
+  // emits: {
+  //   "toggle-favorite": function (friendId) {
+  //     if (friendId) {
+  //       return true;
+  //     } else {
+  //       console.warn("No friendId provided");
+  //       return false;
+  //     }
+  //   },
+  // },
   data() {
     return {
       detailsAreVisible: false,
