@@ -4,8 +4,8 @@ import App from "./App.vue";
 // import TheHeader from "./components/TheHeader.vue";
 // import BadgeList from "./components/BadgeList.vue";
 // import UserInfo from "./components/UserInfo.vue";
-import BaseBadge from "./components/BaseBadge.vue";
-import BaseCard from "./components/BaseCard.vue";
+import BaseBadge from "./components/UI/BaseBadge.vue";
+import BaseCard from "./components/UI/BaseCard.vue";
 
 const app = createApp(App);
 // bad way to register components globally cause its use a lot of memory
