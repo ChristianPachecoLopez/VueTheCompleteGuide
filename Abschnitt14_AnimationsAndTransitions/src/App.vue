@@ -1,53 +1,17 @@
 <template>
-  <div class="container">
-    <list-data />
-  </div>
-
-  <div class="container">
-    <div class="block" :class="{ animate: animatedBlock }"></div>
-    <button @click="animateBlock">Animate</button>
-  </div>
-  <div class="container">
-    <!-- <transition enter-to-class="some-class" enter-active-class="..."></transition> -->
-    <!-- <transition
-      name="para" -->
-    <transition
-      :css="false"
-      @before-enter="beforeEnter"
-      @enter="enter"
-      @before-leave="beforeLeave"
-      @after-enter="afterEnter"
-      @leave="leave"
-      @after-leave="afterLeave"
-      @enter-cancelled="enterCancelled"
-      @leave-cancelled="leaveCancelled"
-    >
-      <p v-if="paraIsVisible">This is only sometimes visible....</p>
+  <router-view v-slot="slotProps">
+    <transition name="route" mode="out-in">
+      <component :is="slotProps.Component"></component>
     </transition>
-    <button @click="toggleParagraph">Toggle Paragraph</button>
-  </div>
-  <div class="container">
-    <transition name="fade" mode="out-in">
-      <button @click="showUser" v-if="!usersAreVisible">Show Users</button>
-      <button @click="hideUser" v-else>Hide Users</button>
-    </transition>
-  </div>
-  <base-modal @close="hideDialog" :open="dialogIsVisible">
-    <p>This is a test dialog!</p>
-    <button @click="hideDialog">Close it!</button>
-  </base-modal>
-
-  <div class="container">
-    <button @click="showDialog">Show Dialog</button>
-  </div>
+  </router-view>
 </template>
 
 <script>
-import ListData from './components/ListData.vue';
+// import ListData from './components/ListData.vue';
 export default {
-  components: {
-    'list-data': ListData,
-  },
+  // components: {
+  //   'list-data': ListData,
+  // },
   data() {
     return {
       dialogIsVisible: false,
@@ -205,22 +169,33 @@ button:active {
   transform: translateY(-30px);
 } */
 
-.fade-eneter-from,
-.fade-leave-to {
+.fade-button-enter-from,
+.fade-button-leave-to {
   opacity: 0;
 }
 
-.fade-eneter-active {
+.fade-button-enter-active {
   transition: opacity 0.3s ease-out;
 }
 
-.fade-leave-active {
+.fade-button-leave-active {
   transition: opacity 0.3s ease-in;
 }
 
-.fade-enter-to,
-.fade-leave-from {
+.fade-button-enter-to,
+.fade-button-leave-from {
   opacity: 1;
+}
+
+.route-enter-from,
+.route-enter-active {
+  animation: slide-scale 0.4s ease-out;
+}
+.route-enter-to {
+}
+
+.route-leave-active {
+  animation: slide-scale 0.4s ease-in;
 }
 
 @keyframes slide-fade {
