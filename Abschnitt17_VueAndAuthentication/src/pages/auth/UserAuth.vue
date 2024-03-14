@@ -1,23 +1,31 @@
 <template>
-  <base-card>
-    <form @submit.prevent="submitForm">
-      <div>
-        <label for="email">Email</label>
-        <input type="email" id="email" v-model="email" />
-      </div>
-      <div>
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="password" />
-      </div>
-      <p v-if="!formIsValid" class="errors">
-        Please enter a valid email and a password with at least 6 characters.
-      </p>
-      <base-button>{{ submitButtonCaption }}</base-button>
-      <base-button type="button" mode="flat" @click="switchAuthMode">
-        {{ switchModeButtonCaption }}
-      </base-button>
-    </form>
-  </base-card>
+  <div>
+    <base-dialog :show="!!error" title="An error ocurred" @close="handleError">
+      <p>{{ error }}</p>
+    </base-dialog>
+    <base-dialog fixed :show="isLoading" title="Authentication...">
+      <base-spinner></base-spinner>
+    </base-dialog>
+    <base-card>
+      <form @submit.prevent="submitForm">
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" v-model="email" />
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input type="password" id="password" v-model="password" />
+        </div>
+        <p v-if="!formIsValid" class="errors">
+          Please enter a valid email and a password with at least 6 characters.
+        </p>
+        <base-button>{{ submitButtonCaption }}</base-button>
+        <base-button type="button" mode="flat" @click="switchAuthMode">
+          {{ switchModeButtonCaption }}
+        </base-button>
+      </form>
+    </base-card>
+  </div>
 </template>
 
 <script>
@@ -28,6 +36,8 @@ export default {
       password: '',
       formIsValid: true,
       mode: 'login',
+      isLoading: false,
+      error: null,
     };
   },
   computed: {
@@ -39,7 +49,7 @@ export default {
     },
   },
   methods: {
-    submitForm() {
+    async submitForm() {
       this.formIsValid = true;
       if (
         this.email === '' ||
@@ -50,11 +60,29 @@ export default {
         this.formIsValid = false;
         return;
       }
-
-      console.log('Form submitted');
+      this.isLoading = true;
+      const authData = {
+        email: this.email,
+        password: this.password,
+      };
+      try {
+        if (this.mode === 'login') {
+          await this.$store.dispatch('login', authData);
+        } else {
+          await this.$store.dispatch('signup', authData);
+        }
+        const redirectUrl = '/' + (this.$route.query.redirect || 'coaches');
+        this.$router.replace(redirectUrl);
+      } catch (error) {
+        this.error = error.message || 'An error occurred';
+      }
+      this.isLoading = false;
     },
     switchAuthMode() {
       this.mode = this.mode === 'login' ? 'signup' : 'login';
+    },
+    handleError() {
+      this.error = null;
     },
   },
 };
